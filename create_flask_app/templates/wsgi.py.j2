@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from app import create_app
 from datetime import datetime
+import hashlib
 # 加载环境变量
 load_dotenv()
 
@@ -11,5 +12,11 @@ app = create_app(os.getenv('FLASK_ENV', 'development'))
 @app.context_processor
 def inject_current_time():
     return {'now': datetime.now()}
+
+@app.template_filter('gravatar')
+def gravatar_filter(email, size=100, default='identicon'):
+    """生成 Gravatar 头像 URL"""
+    email_hash = hashlib.md5(email.lower().encode('utf-8')).hexdigest()
+    return f"https://www.gravatar.com/avatar/{email_hash}?s={size}&d={default}"
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
