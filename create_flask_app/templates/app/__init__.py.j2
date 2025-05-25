@@ -1,0 +1,48 @@
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+{% if auth_enabled %}from flask_login import LoginManager{% endif %}
+{% if admin_enabled %}from flask_admin import Admin{% endif %}
+from app.config import config
+
+# 初始化扩展
+db = SQLAlchemy()
+{% if auth_enabled %}
+login_manager = LoginManager()
+login_manager.login_view = 'auth.login'
+{% endif %}
+{% if admin_enabled %}
+admin = Admin(name='{{ project_name }} Admin', template_mode='bootstrap4')
+{% endif %}
+
+def create_app(config_name='development'):
+    """应用工厂函数"""
+    app = Flask(__name__)
+    
+    # 加载配置
+    app.config.from_object(config[config_name])
+    config[config_name].init_app(app)
+    
+    # 初始化扩展
+    db.init_app(app)
+    {% if auth_enabled %}
+    login_manager.init_app(app)
+    {% endif %}
+    {% if admin_enabled %}
+    admin.init_app(app)
+    {% endif %}
+    
+    # 注册蓝图
+    from .routes import main as main_blueprint
+    app.register_blueprint(main_blueprint)
+    
+    {% if auth_enabled %}
+    from .auth import auth as auth_blueprint
+    app.register_blueprint(auth_blueprint, url_prefix='/auth')
+    {% endif %}
+    
+    {% if api_enabled %}
+    from .api import api as api_blueprint
+    app.register_blueprint(api_blueprint, url_prefix='/api')
+    {% endif %}
+    
+    return app

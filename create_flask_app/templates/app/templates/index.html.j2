@@ -1,0 +1,71 @@
+{% raw %}{% extends "base.html" %}{% endraw %}
+
+{% raw %}{% block title %}{% endraw %}首页 - {{ project_name }}{% raw %}{% endblock %}{% endraw %}
+
+{% raw %}{% block content %}{% endraw %}
+<div class="px-4 py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold">欢迎使用 {{ project_name }}</h1>
+    <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4">
+            这是一个使用Flask构建的Web应用程序。
+            {% if api_enabled %}它提供了REST API接口，{% endif %}
+            {% if auth_enabled %}支持用户认证，{% endif %}
+            {% if admin_enabled %}并包含管理界面。{% endif %}
+        </p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            {% if auth_enabled %}
+            {% raw %}{% if current_user.is_authenticated %}{% endraw %}
+            <a href="{{ '{{ url_for("main.dashboard") }}' }}" class="btn btn-primary btn-lg px-4 gap-3">进入仪表板</a>
+            {% raw %}{% else %}{% endraw %}
+            <a href="{{ '{{ url_for("auth.login") }}' }}" class="btn btn-primary btn-lg px-4 gap-3">登录</a>
+            <a href="{{ '{{ url_for("auth.register") }}' }}" class="btn btn-outline-secondary btn-lg px-4">注册</a>
+            {% raw %}{% endif %}{% endraw %}
+            {% endif %}
+            {% if api_enabled %}
+            <a href="/api/" class="btn btn-outline-info btn-lg px-4">API文档</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container px-4 py-5">
+    <h2 class="pb-2 border-bottom">主要功能</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        {% if auth_enabled %}
+        <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+                <i class="bi bi-person-check"></i>
+            </div>
+            <div>
+                <h2>用户认证</h2>
+                <p>支持用户注册、登录和权限管理，确保应用安全性。</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if api_enabled %}
+        <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+                <i class="bi bi-code-slash"></i>
+            </div>
+            <div>
+                <h2>REST API</h2>
+                <p>提供完整的REST API接口，支持第三方集成。</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if admin_enabled %}
+        <div class="col d-flex align-items-start">
+            <div class="icon-square bg-light text-dark flex-shrink-0 me-3">
+                <i class="bi bi-gear"></i>
+            </div>
+            <div>
+                <h2>管理界面</h2>
+                <p>内置管理后台，方便管理数据和配置。</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% raw %}{% endblock %}{% endraw %}

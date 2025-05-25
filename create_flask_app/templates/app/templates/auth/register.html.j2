@@ -1,0 +1,60 @@
+{% raw %}{% extends "base.html" %}{% endraw %}
+
+{% raw %}{% block title %}{% endraw %}注册 - {{ project_name }}{% raw %}{% endblock %}{% endraw %}
+
+{% raw %}{% block content %}{% endraw %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">注册新账号</h2>
+                <form method="POST" action="{{ '{{ url_for("auth.register") }}' }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">用户名</label>
+                        <input type="text" class="form-control" id="username" name="username" required
+                               minlength="3" maxlength="64">
+                        <div class="form-text">用户名长度需在3-64个字符之间</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">邮箱地址</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="form-text">请使用有效的邮箱地址</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">密码</label>
+                        <input type="password" class="form-control" id="password" name="password" required
+                               minlength="8">
+                        <div class="form-text">密码长度至少8个字符</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password_confirm" class="form-label">确认密码</label>
+                        <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">注册</button>
+                    </div>
+                </form>
+                <div class="text-center mt-3">
+                    <p>已有账号？ <a href="{{ '{{ url_for("auth.login") }}' }}">立即登录</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% raw %}{% block scripts %}{% endraw %}
+<script>
+    // 密码确认验证
+    document.getElementById('password_confirm').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        const passwordConfirm = this.value;
+        
+        if (password !== passwordConfirm) {
+            this.setCustomValidity('两次输入的密码不一致');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+</script>
+{% raw %}{% endblock %}{% endraw %}
+{% raw %}{% endblock %}{% endraw %}

@@ -1,0 +1,40 @@
+# Flask及其扩展
+Flask>=2.3.0
+Werkzeug>=2.3.0
+click>=8.0.0
+python-dotenv>=1.0.0
+Flask-SQLAlchemy>=3.0.0
+Flask-Migrate>=4.0.0
+
+# 数据库驱动
+{% if database == 'postgresql' %}
+psycopg2-binary>=2.9.0
+{% elif database == 'mysql' %}
+mysqlclient>=2.1.0
+{% endif %}
+
+# 认证相关
+{% if auth_enabled %}
+Flask-Login>=0.6.0
+Flask-JWT-Extended>=4.4.0
+passlib>=1.7.4
+{% endif %}
+
+# API相关
+{% if api_enabled %}
+flask-restx>=1.1.0
+marshallow>=3.19.0
+{% endif %}
+
+# 管理界面
+{% if admin_enabled %}
+Flask-Admin>=1.6.0
+{% endif %}
+
+# 表单处理
+Flask-WTF>=1.1.0
+email-validator>=2.0.0
+
+# 生产环境
+gunicorn>=21.0.0
+Supervisor>=4.2.0

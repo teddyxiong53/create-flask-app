@@ -1,0 +1,27 @@
+from flask import Blueprint, render_template{% if api_enabled %}, jsonify{% endif %}
+{% if auth_enabled %}from flask_login import login_required{% endif %}
+
+main = Blueprint('main', __name__)
+
+@main.route('/')
+def index():
+    """首页"""
+    return render_template('index.html')
+
+{% if auth_enabled %}
+@main.route('/dashboard')
+@login_required
+def dashboard():
+    """用户仪表板"""
+    return render_template('dashboard.html')
+{% endif %}
+
+{% if api_enabled %}
+@main.route('/health')
+def health_check():
+    """健康检查接口"""
+    return jsonify({
+        'status': 'healthy',
+        'message': '服务运行正常'
+    })
+{% endif %}

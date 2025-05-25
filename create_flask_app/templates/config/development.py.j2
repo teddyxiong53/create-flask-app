@@ -1,0 +1,19 @@
+from app.config import DevelopmentConfig as Config
+
+# 开发环境特定配置
+DEBUG = True
+TESTING = False
+
+# 数据库配置
+SQLALCHEMY_ECHO = True  # 打印SQL语句
+
+# 邮件配置
+MAIL_SERVER = 'smtp.example.com'
+MAIL_PORT = 587
+MAIL_USE_TLS = True
+MAIL_USERNAME = 'your-email@example.com'
+MAIL_PASSWORD = 'your-password'
+
+# 调试工具栏配置
+DEBUG_TB_ENABLED = True
+DEBUG_TB_INTERCEPT_REDIRECTS = False

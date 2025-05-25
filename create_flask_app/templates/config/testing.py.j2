@@ -1,0 +1,27 @@
+from app.config import TestingConfig as Config
+
+# 测试环境特定配置
+DEBUG = False
+TESTING = True
+
+# 禁用CSRF保护，方便测试
+WTF_CSRF_ENABLED = False
+
+# 使用内存数据库
+SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+
+# 禁用调试工具栏
+DEBUG_TB_ENABLED = False
+
+# 测试邮件配置
+MAIL_SERVER = 'localhost'
+MAIL_PORT = 25
+MAIL_USE_TLS = False
+MAIL_USERNAME = None
+MAIL_PASSWORD = None
+
+# 测试缓存配置
+CACHE_TYPE = 'simple'
+
+# 禁用安全头，方便测试
+SECURE_HEADERS = False

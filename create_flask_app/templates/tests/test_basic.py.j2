@@ -1,0 +1,73 @@
+def test_index(client):
+    """测试首页"""
+    response = client.get('/')
+    assert response.status_code == 200
+    assert b'{{ project_name }}' in response.data
+
+{% if api_enabled %}
+def test_health_check(client):
+    """测试健康检查接口"""
+    response = client.get('/api/v1/health')
+    assert response.status_code == 200
+    assert response.json['status'] == 'healthy'
+{% endif %}
+
+{% if auth_enabled %}
+def test_login_page(client):
+    """测试登录页面"""
+    response = client.get('/auth/login')
+    assert response.status_code == 200
+    assert b'Login' in response.data
+
+def test_register_page(client):
+    """测试注册页面"""
+    response = client.get('/auth/register')
+    assert response.status_code == 200
+    assert b'Register' in response.data
+
+def test_login_process(client, test_user):
+    """测试登录流程"""
+    # 测试登录成功
+    response = client.post('/auth/login', data={
+        'email': test_user.email,
+        'password': 'password123',
+        'remember': 'true'
+    }, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'Dashboard' in response.data
+
+    # 测试登录失败
+    response = client.post('/auth/login', data={
+        'email': test_user.email,
+        'password': 'wrongpassword',
+        'remember': 'true'
+    }, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'Invalid username or password' in response.data
+
+def test_logout(client, test_user):
+    """测试登出功能"""
+    # 先登录
+    client.post('/auth/login', data={
+        'email': test_user.email,
+        'password': 'password123'
+    })
+
+    # 测试登出
+    response = client.get('/auth/logout', follow_redirects=True)
+    assert response.status_code == 200
+    assert b'You have been logged out' in response.data
+{% endif %}
+
+{% if api_enabled %}
+def test_api_auth(client, test_user, auth_headers):
+    """测试API认证"""
+    # 测试未认证访问
+    response = client.get('/api/v1/users/me')
+    assert response.status_code == 401
+
+    # 测试认证访问
+    response = client.get('/api/v1/users/me', headers=auth_headers)
+    assert response.status_code == 200
+    assert response.json['email'] == test_user.email
+{% endif %}

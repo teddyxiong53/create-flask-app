@@ -1,0 +1,110 @@
+// 启用所有工具提示
+document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+
+// 自动隐藏闪现消息
+document.addEventListener('DOMContentLoaded', function() {
+    var alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+        setTimeout(function() {
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }, 5000);
+    });
+});
+
+// 表单验证
+document.addEventListener('DOMContentLoaded', function() {
+    var forms = document.querySelectorAll('.needs-validation');
+    Array.prototype.slice.call(forms).forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
+    });
+});
+
+{% if auth_enabled %}
+// 密码强度检查
+document.addEventListener('DOMContentLoaded', function() {
+    var passwordInput = document.getElementById('password');
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function() {
+            var password = this.value;
+            var strength = 0;
+            
+            // 检查长度
+            if (password.length >= 8) strength++;
+            // 检查大写字母
+            if (/[A-Z]/.test(password)) strength++;
+            // 检查小写字母
+            if (/[a-z]/.test(password)) strength++;
+            // 检查数字
+            if (/[0-9]/.test(password)) strength++;
+            // 检查特殊字符
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            var feedback = document.getElementById('password-strength');
+            if (feedback) {
+                switch(strength) {
+                    case 0:
+                    case 1:
+                        feedback.textContent = '弱';
+                        feedback.className = 'text-danger';
+                        break;
+                    case 2:
+                    case 3:
+                        feedback.textContent = '中等';
+                        feedback.className = 'text-warning';
+                        break;
+                    case 4:
+                    case 5:
+                        feedback.textContent = '强';
+                        feedback.className = 'text-success';
+                        break;
+                }
+            }
+        });
+    }
+});
+{% endif %}
+
+{% if api_enabled %}
+// API请求辅助函数
+async function apiRequest(endpoint, options = {}) {
+    const defaults = {
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    };
+    
+    const token = localStorage.getItem('api_token');
+    if (token) {
+        defaults.headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    try {
+        const response = await fetch(`/api/${endpoint}`, {
+            ...defaults,
+            ...options
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('API请求错误:', error);
+        throw error;
+    }
+}
+{% endif %}

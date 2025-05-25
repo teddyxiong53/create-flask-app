@@ -1,0 +1,38 @@
+[project]
+name = "create-flask-app"
+version = "0.1.0"
+description = "快速生成标准化Flask应用脚手架的命令行工具"
+authors = [{name = "teddyxiong53", email = "1073167306@qq.com"}]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "click>=8.0.0",
+    "jinja2>=3.0.0",
+    "python-dotenv>=1.0.0",
+    "colorama>=0.4.6"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "isort>=5.0.0",
+    "pre-commit>=3.0.0"
+]
+
+[project.scripts]
+create-flask-app = "create_flask_app.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3

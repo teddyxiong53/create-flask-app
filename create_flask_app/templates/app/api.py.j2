@@ -1,0 +1,67 @@
+from flask import Blueprint, jsonify, request
+from flask_restx import Api, Resource, fields
+{% if auth_enabled %}from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
+from app.models.user import User{% endif %}
+
+api_bp = Blueprint('api', __name__)
+api = Api(api_bp, version='1.0', title='{{ project_name }} API',
+          description='{{ project_name }} RESTful API documentation')
+
+# 定义命名空间
+ns = api.namespace('v1', description='API v1')
+
+{% if auth_enabled %}
+# API模型定义
+user_model = api.model('User', {
+    'id': fields.Integer(readonly=True, description='用户ID'),
+    'username': fields.String(required=True, description='用户名'),
+    'email': fields.String(required=True, description='邮箱')
+})
+
+auth_model = api.model('Auth', {
+    'email': fields.String(required=True, description='邮箱'),
+    'password': fields.String(required=True, description='密码')
+})
+
+@ns.route('/auth/login')
+class AuthLogin(Resource):
+    """用户登录接口"""
+    @ns.expect(auth_model)
+    @ns.doc('user_login')
+    def post(self):
+        data = request.json
+        user = User.query.filter_by(email=data.get('email')).first()
+        
+        if not user or not user.check_password(data.get('password')):
+            return {'message': '邮箱或密码错误'}, 401
+        
+        access_token = create_access_token(identity=user.id)
+        return {'access_token': access_token}, 200
+
+@ns.route('/users/me')
+class UserMe(Resource):
+    """当前用户信息接口"""
+    @ns.marshal_with(user_model)
+    @ns.doc('get_user_info')
+    @jwt_required()
+    def get(self):
+        user_id = get_jwt_identity()
+        user = User.query.get_or_404(user_id)
+        return user
+{% endif %}
+
+@ns.route('/health')
+class HealthCheck(Resource):
+    """健康检查接口"""
+    @ns.doc('health_check')
+    def get(self):
+        return {
+            'status': 'healthy',
+            'message': '服务运行正常'
+        }
+
+# 错误处理
+@api.errorhandler
+def default_error_handler(error):
+    """默认错误处理器"""
+    return {'message': str(error)}, getattr(error, 'code', 500)
