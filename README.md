@@ -69,7 +69,9 @@ flask db upgrade
 flask run --debug
 ```
 
+项目运行截图：
 
+![image-20250525120940776](images/image-20250525120940776.png)
 
 ## 许可证
 
