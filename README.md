@@ -50,6 +50,27 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 uv pip install -e .
 ```
 
+4. 创建测试project
+
+```
+python -m create_flask_app.cli myproject --template=basic --db=sqlite --with-auth --with-admin --with-api
+```
+
+5. 启动并测试myproject
+
+```
+cd myproject
+uv venv
+source .venv/bin/activate
+uv pip install -r requirements/dev.txt
+flask db init
+flask db migrate
+flask db upgrade
+flask run --debug
+```
+
+
+
 ## 许可证
 
 MIT
