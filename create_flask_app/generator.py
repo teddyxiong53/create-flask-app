@@ -49,6 +49,29 @@ class FlaskAppGenerator:
         self._generate_requirements()
         self._generate_docker_files()
         self._generate_docs()
+
+        # 生成静态文件
+        self._generate_static_files()
+
+        # 生成数据模型文件
+        self._render_template(
+            'app/models/user.py.j2',
+            self.project_dir / 'app' / 'models' / 'user.py',
+            self._get_template_context()
+        )
+
+        # 生成静态资源
+        self._render_template(
+            'app/static/css/style.css.j2',
+            self.project_dir / 'app' / 'static' / 'css' / 'style.css',
+            self._get_template_context()
+        )
+        self._render_template(
+            'app/static/js/main.js.j2',
+            self.project_dir / 'app' / 'static' / 'js' / 'main.js',
+            self._get_template_context()
+        )
+
         # 生成 WSGI 入口文件
         self._render_template('wsgi.py.j2',
                         self.project_dir / 'wsgi.py',
@@ -168,6 +191,21 @@ class FlaskAppGenerator:
         self._render_template('README.md.j2',
                             self.project_dir / 'README.md',
                             context)
+
+    def _generate_static_files(self) -> None:
+        """生成静态资源文件"""
+        # 复制图片等二进制文件
+        static_src = self.template_dir / 'app' / 'static'
+        static_dst = self.project_dir / 'app' / 'static'
+        
+        for file in static_src.rglob('*'):
+            if file.is_file() and file.suffix in ('.png', '.jpg', '.ico'):
+                relative_path = file.relative_to(static_src)
+                copy_template(
+                    file,
+                    static_dst / relative_path,
+                    context=self._get_template_context()
+                )
 
     def _get_template_context(self) -> Dict[str, Any]:
         """获取模板渲染上下文。
