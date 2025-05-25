@@ -42,7 +42,7 @@ cd {{ project_name }}
 2. 创建并激活虚拟环境：
 
 ```bash
-python -m venv .venv
+uv venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 ```
 
@@ -62,6 +62,8 @@ cp .env.example .env
 5. 初始化数据库：
 
 ```bash
+flask db init
+flask db migrate
 flask db upgrade
 ```
 

@@ -13,6 +13,9 @@
 
 ## 安装
 
+这个还不行。目前还在开发中，没有上传到
+
+
 ```bash
 pip install create-flask-app
 ```
@@ -20,7 +23,7 @@ pip install create-flask-app
 ## 使用方法
 
 ```bash
-create-flask-app myproject --template=basic --db=postgresql
+create-flask-app myproject --template=basic --db=sqlite
 ```
 
 更多使用说明请参考[文档](docs/README.md)。
@@ -30,21 +33,21 @@ create-flask-app myproject --template=basic --db=postgresql
 1. 克隆项目：
 
 ```bash
-git clone https://github.com/yourusername/create-flask-app.git
+git clone https://github.com/teddyxiong53/create-flask-app.git
 cd create-flask-app
 ```
 
 2. 创建虚拟环境：
 
 ```bash
-python -m venv .venv
+uv venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 ```
 
 3. 安装开发依赖：
 
 ```bash
-pip install -e .
+uv pip install -e .
 ```
 
 ## 许可证
